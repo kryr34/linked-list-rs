@@ -22,9 +22,9 @@ impl List {
         if let Some(ref x) = self.tail {
             x.borrow_mut().next = Some(Rc::clone(&newtail));
         } else {
-            self.tail = Some(Rc::clone(&newtail));
             self.head = Some(Rc::clone(&newtail));
         }
+        self.tail = Some(Rc::clone(&newtail));
     }
     fn pop(&mut self) -> Result<usize, &'static str> {
         let head = mem::take(&mut self.head);
@@ -56,13 +56,15 @@ mod tests {
     }
     
     #[test]
-    fn two_pushpop() {
+    fn three_pushpop() {
         let mut list = List::new();
         
         list.push(1);
         list.push(2);
+        list.push(3);
         assert_eq!(Ok(1), list.pop());
         assert_eq!(Ok(2), list.pop());
+        assert_eq!(Ok(3), list.pop());
         assert_eq!(Err("headless panic"), list.pop());
     }
 }
