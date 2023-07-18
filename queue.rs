@@ -41,16 +41,28 @@ impl List {
     }
 }
 
-fn main() {
-    let mut list = List::new();
-
-    list.push(1);
-    assert_eq!(Ok(1), list.pop());
-    assert_eq!(Err("headless panic"), list.pop());
+#[cfg(test)]
+mod tests {
+    use super::*;
     
-    list.push(1);
-    list.push(2);
-    assert_eq!(Ok(1), list.pop());
-    assert_eq!(Ok(2), list.pop());
-    assert_eq!(Err("headless panic"), list.pop());
+    #[test]
+    fn one_pushpop() {
+        let mut list = List::new();
+        
+        assert_eq!(Err("headless panic"), list.pop());
+        list.push(1);
+        assert_eq!(Ok(1), list.pop());
+        assert_eq!(Err("headless panic"), list.pop());
+    }
+    
+    #[test]
+    fn two_pushpop() {
+        let mut list = List::new();
+        
+        list.push(1);
+        list.push(2);
+        assert_eq!(Ok(1), list.pop());
+        assert_eq!(Ok(2), list.pop());
+        assert_eq!(Err("headless panic"), list.pop());
+    }
 }
