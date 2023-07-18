@@ -26,7 +26,7 @@ impl List {
             self.head = Some(Rc::clone(&newtail));
         }
     }
-    fn pop(&mut self) -> usize {
+    fn pop(&mut self) -> Result<usize, &'static str> {
         let head = mem::take(&mut self.head);
         if let Some(ref x) = head {
             let mut x = x.borrow_mut();
@@ -34,9 +34,9 @@ impl List {
             if self.head.is_none() {
                 self.tail = None;
             }
-            x.value
+            Ok(x.value)
         } else {
-            panic!("headless panic");
+            Err("headless panic")
         }
     }
 }
@@ -45,10 +45,12 @@ fn main() {
     let mut list = List::new();
 
     list.push(1);
-    assert_eq!(1, list.pop());
+    assert_eq!(Ok(1), list.pop());
+    assert_eq!(Err("headless panic"), list.pop());
     
     list.push(1);
     list.push(2);
-    assert_eq!(1, list.pop());
-    assert_eq!(2, list.pop());
+    assert_eq!(Ok(1), list.pop());
+    assert_eq!(Ok(2), list.pop());
+    assert_eq!(Err("headless panic"), list.pop());
 }
